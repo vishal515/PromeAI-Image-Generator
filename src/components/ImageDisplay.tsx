@@ -2,13 +2,8 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { 
-  Download, 
-  Share, 
-  Crop, 
-  ArrowRight, 
-  ImageDown,
-  RotateCw,
-  ZoomIn
+  Download,
+  ImageDown
 } from "lucide-react";
 import LoadingSpinner from "./LoadingSpinner";
 
@@ -16,14 +11,12 @@ interface ImageDisplayProps {
   imageUrl: string | null;
   isLoading: boolean;
   prompt: string;
-  onEdit: () => void;
 }
 
 const ImageDisplay: React.FC<ImageDisplayProps> = ({ 
   imageUrl, 
   isLoading, 
-  prompt,
-  onEdit
+  prompt
 }) => {
   const [isImageLoaded, setIsImageLoaded] = useState(false);
 
@@ -36,24 +29,6 @@ const ImageDisplay: React.FC<ImageDisplayProps> = ({
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
-  };
-
-  const handleShare = async () => {
-    if (!imageUrl || !navigator.share) return;
-    
-    try {
-      const response = await fetch(imageUrl);
-      const blob = await response.blob();
-      const file = new File([blob], `promeai-image.png`, { type: blob.type });
-      
-      await navigator.share({
-        title: 'PromeAI Generated Image',
-        text: prompt,
-        files: [file]
-      });
-    } catch (error) {
-      console.error("Error sharing image:", error);
-    }
   };
 
   if (isLoading) {
@@ -87,18 +62,8 @@ const ImageDisplay: React.FC<ImageDisplayProps> = ({
       />
       
       <div className="p-3 bg-background/80 backdrop-blur-sm absolute bottom-0 left-0 right-0 flex justify-between items-center">
-        <div className="flex gap-2">
-          <Button size="sm" variant="secondary" onClick={handleDownload}>
-            <Download className="w-4 h-4 mr-1" /> Save
-          </Button>
-          {navigator.share && (
-            <Button size="sm" variant="secondary" onClick={handleShare}>
-              <Share className="w-4 h-4 mr-1" /> Share
-            </Button>
-          )}
-        </div>
-        <Button size="sm" onClick={onEdit} className="bg-promeai-500 hover:bg-promeai-600 text-white">
-          <Crop className="w-4 h-4 mr-1" /> Edit Image <ArrowRight className="w-3 h-3 ml-1" />
+        <Button size="sm" variant="secondary" onClick={handleDownload}>
+          <Download className="w-4 h-4 mr-1" /> Download
         </Button>
       </div>
     </div>
