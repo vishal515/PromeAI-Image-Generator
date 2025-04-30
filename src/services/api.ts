@@ -1,8 +1,8 @@
 
 import { toast } from "sonner";
 
-// Updated to use a supported stable diffusion model
-const HUGGINGFACE_API_URL = "https://api-inference.huggingface.co/models/runwayml/stable-diffusion-v1-5";
+// Updated to use a widely supported stable diffusion model
+const HUGGINGFACE_API_URL = "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0";
 const HUGGINGFACE_ACCESS_TOKEN = "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";
 
 interface GenerateImageParams {
@@ -33,8 +33,24 @@ export async function generateImage(params: GenerateImageParams): Promise<string
     });
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.error || `API request failed with status ${response.status}`);
+      let errorMessage = `API request failed with status ${response.status}`;
+      
+      try {
+        const errorData = await response.json();
+        if (errorData.error) {
+          if (errorData.error.includes("currently loading")) {
+            errorMessage = "Model is loading, please try again in a moment.";
+          } else if (errorData.error.includes("is not supported")) {
+            errorMessage = "This model is not supported by the Hugging Face API. Please contact support.";
+          } else {
+            errorMessage = errorData.error;
+          }
+        }
+      } catch (e) {
+        console.error("Failed to parse error response:", e);
+      }
+      
+      throw new Error(errorMessage);
     }
 
     // The response should be the image data
