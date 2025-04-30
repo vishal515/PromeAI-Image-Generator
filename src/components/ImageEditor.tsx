@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -19,6 +19,26 @@ const ImageEditor: React.FC<ImageEditorProps> = ({ imageUrl, onBack, onSave }) =
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [history, setHistory] = useState<string[]>([imageUrl]);
   const [activeTab, setActiveTab] = useState("crop");
+  const [originalImageSize, setOriginalImageSize] = useState({ width: 512, height: 512 });
+
+  // Load original image dimensions when component mounts or imageUrl changes
+  useEffect(() => {
+    const img = new Image();
+    img.onload = () => {
+      setOriginalImageSize({
+        width: img.width,
+        height: img.height
+      });
+      
+      // Update resize settings with actual image dimensions
+      setResizeSettings({
+        ...resizeSettings,
+        width: img.width,
+        height: img.height
+      });
+    };
+    img.src = imageUrl;
+  }, [imageUrl]);
 
   const [cropSettings, setCropSettings] = useState({
     x: 0,
@@ -48,24 +68,33 @@ const ImageEditor: React.FC<ImageEditorProps> = ({ imageUrl, onBack, onSave }) =
 
       switch (operation) {
         case 'crop':
+          // Calculate actual pixel values from percentages
+          const actualWidth = Math.round((cropSettings.width / 100) * originalImageSize.width);
+          const actualHeight = Math.round((cropSettings.height / 100) * originalImageSize.height);
+          const actualX = Math.round((cropSettings.x / 100) * originalImageSize.width);
+          const actualY = Math.round((cropSettings.y / 100) * originalImageSize.height);
+          
           params.options = {
-            x: Math.round(cropSettings.x * 5.12), // Convert percentage to pixels (assuming 512x512 image)
-            y: Math.round(cropSettings.y * 5.12),
-            width: Math.round(cropSettings.width * 5.12 / 100),
-            height: Math.round(cropSettings.height * 5.12 / 100),
+            x: actualX,
+            y: actualY,
+            width: actualWidth,
+            height: actualHeight,
           };
           break;
+          
         case 'resize':
           params.options = {
             width: resizeSettings.width,
             height: resizeSettings.height,
           };
           break;
+          
         case 'rotate':
           params.options = {
             degrees: rotateSettings.degrees,
           };
           break;
+          
         case 'flip':
           params.options = {
             direction: 'horizontal',
@@ -73,13 +102,46 @@ const ImageEditor: React.FC<ImageEditorProps> = ({ imageUrl, onBack, onSave }) =
           break;
       }
 
+      console.log(`Applying ${operation} with options:`, params.options);
       const newImageUrl = await editImage(params);
       setEditedImageUrl(newImageUrl);
       setHistory([...history, newImageUrl]);
-      toast.success("Image edited successfully");
+      
+      // Update original size for the newly edited image
+      const newImg = new Image();
+      newImg.onload = () => {
+        setOriginalImageSize({
+          width: newImg.width,
+          height: newImg.height
+        });
+      };
+      newImg.src = newImageUrl;
+      
+      toast.success(`Image ${operation} applied successfully`);
     } catch (error) {
       console.error("Error editing image:", error);
-      toast.error("Failed to edit image");
+      toast.error(`Failed to ${operation} image. Please try again.`);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleFlipVertical = async () => {
+    setIsLoading(true);
+    try {
+      const params: EditImageParams = {
+        imageUrl: editedImageUrl,
+        operation: 'flip',
+        options: { direction: 'vertical' }
+      };
+      
+      const newImageUrl = await editImage(params);
+      setEditedImageUrl(newImageUrl);
+      setHistory([...history, newImageUrl]);
+      toast.success("Image flipped vertically");
+    } catch (error) {
+      console.error("Error flipping image:", error);
+      toast.error("Failed to flip image. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -94,12 +156,49 @@ const ImageEditor: React.FC<ImageEditorProps> = ({ imageUrl, onBack, onSave }) =
     
     setEditedImageUrl(previousImage);
     setHistory(newHistory);
+    
+    // Update original size for the previous image
+    const prevImg = new Image();
+    prevImg.onload = () => {
+      setOriginalImageSize({
+        width: prevImg.width,
+        height: prevImg.height
+      });
+    };
+    prevImg.src = previousImage;
+    
     toast.info("Change undone");
   };
 
   const handleSave = () => {
     onSave(editedImageUrl);
     toast.success("Image saved successfully");
+  };
+
+  // Handle aspect ratio in resize
+  const updateDimension = (dimension: 'width' | 'height', value: number) => {
+    if (resizeSettings.maintainAspectRatio) {
+      const aspectRatio = originalImageSize.width / originalImageSize.height;
+      
+      if (dimension === 'width') {
+        setResizeSettings({
+          ...resizeSettings,
+          width: value,
+          height: Math.round(value / aspectRatio)
+        });
+      } else {
+        setResizeSettings({
+          ...resizeSettings,
+          height: value,
+          width: Math.round(value * aspectRatio)
+        });
+      }
+    } else {
+      setResizeSettings({
+        ...resizeSettings,
+        [dimension]: value
+      });
+    }
   };
 
   return (
@@ -216,16 +315,7 @@ const ImageEditor: React.FC<ImageEditorProps> = ({ imageUrl, onBack, onSave }) =
                   min={64}
                   max={1024}
                   step={8}
-                  onValueChange={(values) => {
-                    const newWidth = values[0];
-                    setResizeSettings({
-                      ...resizeSettings,
-                      width: newWidth,
-                      height: resizeSettings.maintainAspectRatio 
-                        ? newWidth 
-                        : resizeSettings.height
-                    });
-                  }}
+                  onValueChange={(values) => updateDimension('width', values[0])}
                 />
               </div>
               <div className="space-y-2">
@@ -235,16 +325,7 @@ const ImageEditor: React.FC<ImageEditorProps> = ({ imageUrl, onBack, onSave }) =
                   min={64}
                   max={1024}
                   step={8}
-                  onValueChange={(values) => {
-                    const newHeight = values[0];
-                    setResizeSettings({
-                      ...resizeSettings,
-                      height: newHeight,
-                      width: resizeSettings.maintainAspectRatio 
-                        ? newHeight 
-                        : resizeSettings.width
-                    });
-                  }}
+                  onValueChange={(values) => updateDimension('height', values[0])}
                 />
               </div>
               <div className="flex items-center space-x-2">
@@ -287,7 +368,7 @@ const ImageEditor: React.FC<ImageEditorProps> = ({ imageUrl, onBack, onSave }) =
                   variant="outline" 
                   onClick={() => {
                     setRotateSettings({ degrees: 90 });
-                    handleEditOperation('rotate');
+                    setTimeout(() => handleEditOperation('rotate'), 10);
                   }}
                   disabled={isLoading}
                 >
@@ -297,7 +378,7 @@ const ImageEditor: React.FC<ImageEditorProps> = ({ imageUrl, onBack, onSave }) =
                   variant="outline" 
                   onClick={() => {
                     setRotateSettings({ degrees: 180 });
-                    handleEditOperation('rotate');
+                    setTimeout(() => handleEditOperation('rotate'), 10);
                   }}
                   disabled={isLoading}
                 >
@@ -307,7 +388,7 @@ const ImageEditor: React.FC<ImageEditorProps> = ({ imageUrl, onBack, onSave }) =
                   variant="outline" 
                   onClick={() => {
                     setRotateSettings({ degrees: 270 });
-                    handleEditOperation('rotate');
+                    setTimeout(() => handleEditOperation('rotate'), 10);
                   }}
                   disabled={isLoading}
                 >
@@ -317,7 +398,7 @@ const ImageEditor: React.FC<ImageEditorProps> = ({ imageUrl, onBack, onSave }) =
                   variant="outline" 
                   onClick={() => {
                     setRotateSettings({ degrees: 0 });
-                    handleEditOperation('rotate');
+                    setTimeout(() => handleEditOperation('rotate'), 10);
                   }}
                   disabled={isLoading}
                 >
@@ -347,16 +428,7 @@ const ImageEditor: React.FC<ImageEditorProps> = ({ imageUrl, onBack, onSave }) =
                 <Button 
                   variant="outline" 
                   className="h-24 flex flex-col"
-                  onClick={() => {
-                    editImage({
-                      imageUrl: editedImageUrl,
-                      operation: 'flip',
-                      options: { direction: 'vertical' }
-                    }).then(newImageUrl => {
-                      setEditedImageUrl(newImageUrl);
-                      setHistory([...history, newImageUrl]);
-                    });
-                  }}
+                  onClick={handleFlipVertical}
                   disabled={isLoading}
                 >
                   <FlipHorizontal2 className="h-8 w-8 mb-2 transform rotate-90" />
