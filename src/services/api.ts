@@ -1,7 +1,8 @@
 
 import { toast } from "sonner";
 
-const HUGGINGFACE_API_URL = "https://api-inference.huggingface.co/models/DeepFloyd/IF-I-XL-v1.0";
+// Updated to use a supported stable diffusion model
+const HUGGINGFACE_API_URL = "https://api-inference.huggingface.co/models/runwayml/stable-diffusion-v1-5";
 const HUGGINGFACE_ACCESS_TOKEN = "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";
 
 interface GenerateImageParams {
@@ -13,6 +14,8 @@ interface GenerateImageParams {
 
 export async function generateImage(params: GenerateImageParams): Promise<string> {
   try {
+    toast.info("Generating your image, please wait...");
+    
     const response = await fetch(HUGGINGFACE_API_URL, {
       method: "POST",
       headers: {

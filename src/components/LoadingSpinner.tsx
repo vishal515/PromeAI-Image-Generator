@@ -14,7 +14,7 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({ size = "md", className 
   };
 
   return (
-    <div className={`flex items-center justify-center ${className}`}>
+    <div className={`flex flex-col items-center justify-center gap-2 ${className}`}>
       <div
         className={`${sizeClasses[size]} animate-spin rounded-full border-4 border-solid border-primary border-t-transparent`}
         role="status"
@@ -22,6 +22,11 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({ size = "md", className 
       >
         <span className="sr-only">Loading...</span>
       </div>
+      {size === "lg" && (
+        <p className="text-sm text-muted-foreground animate-pulse">
+          This may take a moment...
+        </p>
+      )}
     </div>
   );
 };
