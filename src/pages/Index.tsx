@@ -7,6 +7,8 @@ import Gallery from "@/components/Gallery";
 import { generateImage } from "@/services/api";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
+import { Link } from "react-router-dom";
+import { Helmet } from "react-helmet";
 
 const Index = () => {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
@@ -51,6 +53,19 @@ const Index = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
+      <Helmet>
+        <title>PromeAI: Free AI Image Generator</title>
+        <meta name="description" content="Create stunning, unique images with AI. Simply describe what you want to see, and our AI will bring your vision to life." />
+        <meta name="keywords" content="AI image generator, artificial intelligence, image creation, text to image, AI art" />
+        <meta property="og:title" content="PromeAI: Free AI Image Generator" />
+        <meta property="og:description" content="Create stunning, unique images with AI. Simply describe what you want to see, and our AI will bring your vision to life." />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="PromeAI: Free AI Image Generator" />
+        <meta name="twitter:description" content="Create stunning, unique images with AI. Simply describe what you want to see, and our AI will bring your vision to life." />
+        <link rel="canonical" href="https://www.promeai.com/" />
+      </Helmet>
+      
       <Header />
       
       <main className="flex-1 container mx-auto py-8 px-4">
@@ -117,15 +132,15 @@ const Index = () => {
               </p>
             </div>
             <div className="flex gap-4">
-              <a href="#" className="text-sm text-muted-foreground hover:text-foreground">
+              <Link to="/terms" className="text-sm text-muted-foreground hover:text-foreground">
                 Terms
-              </a>
-              <a href="#" className="text-sm text-muted-foreground hover:text-foreground">
+              </Link>
+              <Link to="/privacy" className="text-sm text-muted-foreground hover:text-foreground">
                 Privacy
-              </a>
-              <a href="#" className="text-sm text-muted-foreground hover:text-foreground">
+              </Link>
+              <Link to="/about" className="text-sm text-muted-foreground hover:text-foreground">
                 About
-              </a>
+              </Link>
             </div>
           </div>
         </div>
