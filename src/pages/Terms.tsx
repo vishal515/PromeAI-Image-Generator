@@ -1,6 +1,7 @@
 
 import React from "react";
 import Header from "@/components/Header";
+import { Link } from "react-router-dom";
 
 const Terms = () => {
   return (
@@ -48,7 +49,6 @@ const Terms = () => {
         </div>
       </main>
       
-      {/* Footer with links */}
       <footer className="bg-background border-t border-border py-6">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-center">
