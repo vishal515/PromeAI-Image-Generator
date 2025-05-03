@@ -76,3 +76,8 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Hide lovable badge */
+#lovable-badge {
+  display: none !important;
+}
