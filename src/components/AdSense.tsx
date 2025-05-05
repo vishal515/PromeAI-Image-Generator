@@ -6,15 +6,13 @@ interface AdSenseProps {
   adClient: string;
   adSlot: string;
   adFormat?: string;
-  style?: React.CSSProperties;
 }
 
 const AdSense: React.FC<AdSenseProps> = ({ 
   className, 
   adClient, 
   adSlot, 
-  adFormat = 'auto', 
-  style 
+  adFormat = 'auto'
 }) => {
   useEffect(() => {
     // Load AdSense script if it hasn't been loaded already
@@ -30,8 +28,9 @@ const AdSense: React.FC<AdSenseProps> = ({
 
     // Push the ad to the queue for rendering
     try {
-      const adsbygoogle = window.adsbygoogle || [];
-      adsbygoogle.push({});
+      // Initialize adsbygoogle if it doesn't exist
+      window.adsbygoogle = window.adsbygoogle || [];
+      window.adsbygoogle.push({});
     } catch (e) {
       console.error('AdSense error:', e);
     }
@@ -41,7 +40,7 @@ const AdSense: React.FC<AdSenseProps> = ({
     <div className={className}>
       <ins
         className="adsbygoogle"
-        style={style || { display: 'block', textAlign: 'center' }}
+        style={{ display: 'block', textAlign: 'center' }}
         data-ad-client={adClient}
         data-ad-slot={adSlot}
         data-ad-format={adFormat}

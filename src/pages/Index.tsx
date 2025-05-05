@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import Header from "@/components/Header";
 import PromptInput from "@/components/PromptInput";
@@ -104,16 +105,6 @@ const Index = () => {
                   />
                 </div>
               </div>
-              
-              {/* AdSense Banner */}
-              <div className="mt-8 mb-8">
-                <AdSense
-                  adClient="ca-pub-XXXXXXXXXXXXXXXX" // Replace with your AdSense client ID
-                  adSlot="XXXXXXXXXX" // Replace with your AdSense slot ID
-                  style={{ display: 'block', minHeight: '100px', width: '100%', border: '1px solid #ddd', borderRadius: '8px', overflow: 'hidden' }}
-                  className="bg-secondary/30 p-2 rounded-lg"
-                />
-              </div>
             </TabsContent>
             
             <TabsContent value="gallery" className="mt-6">
@@ -125,20 +116,21 @@ const Index = () => {
                   setActiveTab("create");
                 }}
               />
-              
-              {/* AdSense Banner for Gallery tab as well */}
-              <div className="mt-8">
-                <AdSense
-                  adClient="ca-pub-XXXXXXXXXXXXXXXX" // Replace with your AdSense client ID
-                  adSlot="XXXXXXXXXX" // Replace with your AdSense slot ID
-                  style={{ display: 'block', minHeight: '100px', width: '100%', border: '1px solid #ddd', borderRadius: '8px', overflow: 'hidden' }}
-                  className="bg-secondary/30 p-2 rounded-lg"
-                />
-              </div>
             </TabsContent>
           </Tabs>
         </section>
       </main>
+      
+      {/* AdSense Banner Above Footer */}
+      <div className="w-full py-8 px-4">
+        <div className="container mx-auto">
+          <AdSense
+            adClient="ca-pub-XXXXXXXXXXXXXXXX" // Replace with your AdSense client ID
+            adSlot="XXXXXXXXXX" // Replace with your AdSense slot ID
+            className="w-full py-4"
+          />
+        </div>
+      </div>
       
       <footer className="bg-background border-t border-border py-6">
         <div className="container mx-auto px-4">
