@@ -30,7 +30,8 @@ const AdSense: React.FC<AdSenseProps> = ({
 
     // Push the ad to the queue for rendering
     try {
-      (window.adsbygoogle = window.adsbygoogle || []).push({});
+      const adsbygoogle = window.adsbygoogle || [];
+      adsbygoogle.push({});
     } catch (e) {
       console.error('AdSense error:', e);
     }
