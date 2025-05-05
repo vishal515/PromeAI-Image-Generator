@@ -1,9 +1,9 @@
-
 import React, { useState } from "react";
 import Header from "@/components/Header";
 import PromptInput from "@/components/PromptInput";
 import ImageDisplay from "@/components/ImageDisplay";
 import Gallery from "@/components/Gallery";
+import AdSense from "@/components/AdSense";
 import { generateImage } from "@/services/api";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
@@ -104,6 +104,16 @@ const Index = () => {
                   />
                 </div>
               </div>
+              
+              {/* AdSense Banner */}
+              <div className="mt-8 mb-8">
+                <AdSense
+                  adClient="ca-pub-XXXXXXXXXXXXXXXX" // Replace with your AdSense client ID
+                  adSlot="XXXXXXXXXX" // Replace with your AdSense slot ID
+                  style={{ display: 'block', minHeight: '100px', width: '100%', border: '1px solid #ddd', borderRadius: '8px', overflow: 'hidden' }}
+                  className="bg-secondary/30 p-2 rounded-lg"
+                />
+              </div>
             </TabsContent>
             
             <TabsContent value="gallery" className="mt-6">
@@ -115,6 +125,16 @@ const Index = () => {
                   setActiveTab("create");
                 }}
               />
+              
+              {/* AdSense Banner for Gallery tab as well */}
+              <div className="mt-8">
+                <AdSense
+                  adClient="ca-pub-XXXXXXXXXXXXXXXX" // Replace with your AdSense client ID
+                  adSlot="XXXXXXXXXX" // Replace with your AdSense slot ID
+                  style={{ display: 'block', minHeight: '100px', width: '100%', border: '1px solid #ddd', borderRadius: '8px', overflow: 'hidden' }}
+                  className="bg-secondary/30 p-2 rounded-lg"
+                />
+              </div>
             </TabsContent>
           </Tabs>
         </section>
