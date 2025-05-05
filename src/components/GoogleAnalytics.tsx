@@ -14,7 +14,7 @@ declare global {
   }
 }
 
-const GoogleAnalytics = ({ trackingId = 'G-JZYXKEJZ4S' }) => {
+const GoogleAnalytics = ({ trackingId = 'G-JZYXKE56jgJZ4S' }) => {
   const location = useLocation();
 
   useEffect(() => {
