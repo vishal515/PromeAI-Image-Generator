@@ -4,7 +4,6 @@ import Header from "@/components/Header";
 import PromptInput from "@/components/PromptInput";
 import ImageDisplay from "@/components/ImageDisplay";
 import Gallery from "@/components/Gallery";
-import AdSense from "@/components/AdSense";
 import { generateImage } from "@/services/api";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
@@ -61,10 +60,13 @@ const Index = () => {
         <meta property="og:title" content="PromeAI: Free AI Image Generator" />
         <meta property="og:description" content="Create stunning, unique images with AI. Simply describe what you want to see, and our AI will bring your vision to life." />
         <meta property="og:type" content="website" />
+        <meta property="og:image" content="https://www.promeai.art/promeai-free-ai-image-generator.png" />
         <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content="@promeai" />
+        <meta name="twitter:image" content="https://www.promeai.art/promeai-free-ai-image-generator.png" />
         <meta name="twitter:title" content="PromeAI: Free AI Image Generator" />
         <meta name="twitter:description" content="Create stunning, unique images with AI. Simply describe what you want to see, and our AI will bring your vision to life." />
-        <link rel="canonical" href="https://www.promeai.com/" />
+        <link rel="canonical" href="https://www.promeai.art/" />
       </Helmet>
       
       <Header />
@@ -120,17 +122,6 @@ const Index = () => {
           </Tabs>
         </section>
       </main>
-      
-      {/* AdSense Banner Above Footer */}
-      <div className="w-full py-8 px-4">
-        <div className="container mx-auto">
-          <AdSense
-            adClient="ca-pub-XXXXXXXXXXXXXXXX" // Replace with your AdSense client ID
-            adSlot="XXXXXXXXXX" // Replace with your AdSense slot ID
-            className="w-full py-4"
-          />
-        </div>
-      </div>
       
       <footer className="bg-background border-t border-border py-6">
         <div className="container mx-auto px-4">
