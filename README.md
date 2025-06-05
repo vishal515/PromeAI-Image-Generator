@@ -2,7 +2,7 @@
 
 ## Project info
 
-**URL**: https://lovable.dev/projects/fa8aaf05-aed8-40c5-9e92-a46c0952592a
+**URL**: https://promeai.art/
 
 ## How can I edit this code?
 
@@ -10,7 +10,7 @@ There are several ways of editing your application.
 
 **Use Lovable**
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/fa8aaf05-aed8-40c5-9e92-a46c0952592a) and start prompting.
+Simply visit the [Lovable Project](https://promeai.art/) and start prompting.
 
 Changes made via Lovable will be committed automatically to this repo.
 
@@ -62,7 +62,7 @@ This project is built with:
 
 ## How can I deploy this project?
 
-Simply open [Lovable](https://lovable.dev/projects/fa8aaf05-aed8-40c5-9e92-a46c0952592a) and click on Share -> Publish.
+Clone the repository ```git clone https://github.com/vishal515/PromeAI-Image-Generator.git```
 
 ## Can I connect a custom domain to my Lovable project?
 
